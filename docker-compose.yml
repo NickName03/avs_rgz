@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    environment:
+      JENKINS_OPTS: --httpPort=8080
+    networks:
+      - jenkins-network
+
+  git-client:
+    image: alpine/git
+    command: ["git", "clone", "https://github.com/NickName03/avs_rgz"]
+    networks:
+      - jenkins-network
+
+  docker:
+    image: docker:dind
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - jenkins-network
+
+networks:
+  jenkins-network:
+    driver: bridge
+
+volumes:
+  jenkins_home:
