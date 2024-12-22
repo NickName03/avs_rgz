@@ -8,12 +8,11 @@ services:
       - "8080:8080"
     volumes:
       - jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock # Общий доступ к сокету Docker
     environment:
       JENKINS_OPTS: --httpPort=8080
     networks:
       - jenkins-network
-    depends_on: # гарантия того, что контейнер docker всегда запущен при старте jenkins
+    depends_on: #ensure that docker container is always up when jenkins is started
       - docker
 
   git-client:
@@ -27,7 +26,8 @@ services:
     privileged: true
     networks:
       - jenkins-network
-
+    expose: #expose the docker port
+      - 2375
 networks:
   jenkins-network:
     driver: bridge
