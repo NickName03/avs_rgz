@@ -8,11 +8,12 @@ services:
       - "8080:8080"
     volumes:
       - jenkins_home:/var/jenkins_home
+      - /usr/bin/docker:/usr/bin/docker # Mount docker client
     environment:
       JENKINS_OPTS: --httpPort=8080
     networks:
       - jenkins-network
-    depends_on: #ensure that docker container is always up when jenkins is started
+    depends_on:
       - docker
 
   git-client:
@@ -26,8 +27,9 @@ services:
     privileged: true
     networks:
       - jenkins-network
-    expose: #expose the docker port
+    expose:
       - 2375
+
 networks:
   jenkins-network:
     driver: bridge
