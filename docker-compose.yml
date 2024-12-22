@@ -8,11 +8,13 @@ services:
       - "8080:8080"
     volumes:
       - jenkins_home:/var/jenkins_home
-      - /usr/bin/docker:/usr/bin/docker # Mount docker client
+      - /usr/bin/docker:/usr/bin/docker
     environment:
       JENKINS_OPTS: --httpPort=8080
     networks:
-      - jenkins-network
+      jenkins-network:
+        aliases: # Add alias to the jenkins network
+          - jenkins
     depends_on:
       - docker
 
@@ -26,13 +28,14 @@ services:
     image: docker:dind
     privileged: true
     networks:
-      - jenkins-network
+      jenkins-network:
+        aliases: # Add alias to the jenkins network
+          - docker-daemon
     expose:
       - 2375
 
 networks:
   jenkins-network:
     driver: bridge
-
 volumes:
   jenkins_home:
