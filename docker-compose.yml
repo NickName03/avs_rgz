@@ -2,36 +2,22 @@ version: '3.8'
 
 services:
   jenkins:
-    image: jenkins/jenkins:lts
+    build:
+      context: . # Путь к директории с Dockerfile
     container_name: jenkins
     ports:
-      - "8080:8080"
+      - "8080:8080" # HTTP порт для Jenkins
+      - "50000:50000" # Порт для агентов Jenkins
     volumes:
-      - jenkins_home:/var/jenkins_home
-      - /usr/bin/docker:/usr/bin/docker
-    environment:
-      JENKINS_OPTS: --httpPort=8080
+      - jenkins_home:/var/jenkins_home # Сохранение данных Jenkins
+      - /var/run/docker.sock:/var/run/docker.sock # Доступ к Docker-сокету
     networks:
       - jenkins-network
-    depends_on:
-      - docker
-
-  git-client:
-    image: alpine/git
-    command: ["git", "clone", "https://github.com/NickName03/avs_rgz"]
-    networks:
-      - jenkins-network
-
-  docker:
-    image: docker:dind
-    privileged: true
-    networks:
-      - jenkins-network
-    expose:
-      - 2375
+    restart: always
 
 networks:
   jenkins-network:
     driver: bridge
+
 volumes:
   jenkins_home:
