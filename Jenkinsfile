@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "my-application"
         REGISTRY = "my-docker-registry.local"
-        DOCKER_HOST = "tcp://docker:2375" // Correctly target the docker:dind daemon
+        DOCKER_HOST = "tcp://docker:2375"
     }
 
     stages {
@@ -15,7 +15,10 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            steps {
+           steps {
+               script {
+                    sleep 10 // Wait for 10 seconds
+               }
                 sh '''
                 docker -H $DOCKER_HOST build -t $IMAGE_NAME:$BUILD_NUMBER .
                 '''
