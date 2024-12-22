@@ -4,7 +4,6 @@ pipeline {
     environment {
         IMAGE_NAME = "my-application"
         REGISTRY = "my-docker-registry.local"
-        
     }
 
     stages {
@@ -14,10 +13,10 @@ pipeline {
             }
         }
 
-        stage('Get Docker Daemon IP') {
+         stage('Get Docker Daemon IP') {
             steps {
                script {
-                    def dockerDaemonIP = sh(script: 'docker inspect docker-daemon | grep IPAddress | cut -d\\" -f4', returnStdout: true).trim()
+                    def dockerDaemonIP = sh(script: 'docker -H tcp://docker-daemon:2375 inspect docker-daemon | grep IPAddress | cut -d\\" -f4', returnStdout: true).trim()
                     env.DOCKER_HOST = "tcp://${dockerDaemonIP}:2375"
                 }
             }
