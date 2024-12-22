@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "my-application"
         REGISTRY = "my-docker-registry.local"
-        DOCKER_HOST = "tcp://docker-daemon:2375" // Correctly target the docker:dind daemon
+        
     }
 
     stages {
@@ -14,9 +14,18 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Get Docker Daemon IP') {
             steps {
                script {
+                    def dockerDaemonIP = sh(script: 'docker inspect docker-daemon | grep IPAddress | cut -d\\" -f4', returnStdout: true).trim()
+                    env.DOCKER_HOST = "tcp://${dockerDaemonIP}:2375"
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+           steps {
+                script {
                     sleep 10 // Wait for 10 seconds
                 }
                 sh '''

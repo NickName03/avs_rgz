@@ -12,9 +12,7 @@ services:
     environment:
       JENKINS_OPTS: --httpPort=8080
     networks:
-      jenkins-network:
-        aliases: # Add alias to the jenkins network
-          - jenkins
+      - jenkins-network
     depends_on:
       - docker
 
@@ -28,9 +26,7 @@ services:
     image: docker:dind
     privileged: true
     networks:
-      jenkins-network:
-        aliases: # Add alias to the jenkins network
-          - docker-daemon
+      - jenkins-network
     expose:
       - 2375
 
